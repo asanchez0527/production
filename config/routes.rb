@@ -22,14 +22,14 @@ Rails.application.routes.draw do
   match 'boardofdirectors',        to: 'static_pages#boardofdirectors', via: 'get'
   match 'tos',            to: 'static_pages#tos', via: 'get'
   match 'livestream',     to: 'static_pages#livestream', via: 'get'
-  match 'ux',             to: 'static_pages#chat', via: 'get'
+  match 'ux',             to: 'static_pages#ux', via: 'get'
   match 'vieweronhost',   to: 'static_pages#vieweronhost', via: 'get'
   match 'jointheteam',    to: 'static_pages#jointheteam', via: 'get'
   match 'bystanderguidelines',    to: 'static_pages#bystanderguidelines', via: 'get'
   match 'drschaeferspeaking',     to: 'static_pages#drschaeferspeaking', via: 'get'
   match 'seniorliving',   to: 'static_pages#seniorliving', via: 'get'
   match 'studyhall',      to: 'static_pages#studyhall', via: 'get'
-
+  match 'blocked',        to: 'static_pages#blocked', via: 'get'
   match '/merchandises/standardperks' => 'merchandises#standardperks', :as => :standardperks, via: 'get'
   match '/merchandises/new' => 'merchandises#new', :as => :createperk, via: 'get'
 
@@ -39,13 +39,11 @@ Rails.application.routes.draw do
   resources :events
   resources :messages
 
-  devise_for :users, :skip => [:sessions, :passwords, :confirmations], :controllers => {registrations: "users/registrations", confirmations: "users/confirmations", passwords: "users/passwords", :omniauth_callbacks => "users/omniauth_callbacks"}
+  devise_for :users, :skip => [:sessions, :passwords], :controllers => {registrations: 'api/v1/users/registrations', passwords: "users/passwords", :omniauth_callbacks => "users/omniauth_callbacks"} 
   as :user do
-    get 'confirmation' => 'users/confirmations#show', :as => :user_confirmation
-    get 'confirmation/new' => 'users/confirmations#new', :as => :new_user_confirmation
-    post 'confirmation' => 'users/confirmations#create'
     get 'login'  => 'devise/sessions#new',    :as => :new_user_session
     post 'login' => 'devise/sessions#create', :as => :user_session
+
     delete 'signout' => 'devise/sessions#destroy', :as => :destroy_user_session
     get "signup", :to => 'devise/registrations#new', :as => :new_user_signup
     post "signup", :to => 'devise/registrations#create', :as => :user_signup
@@ -70,6 +68,7 @@ Rails.application.routes.draw do
   match '/supportourwork' => "users#supportourwork", :as => :supportourwork, via: 'get'
 
   match '/:permalink'                => "users#show",           :as => :user_profile, via: 'get'
+  match '/:permalink/viewer'         => "users#viewer",         :as => :user_viewer, via: 'get'
   match '/:permalink/followers'      => "users#followerspage",  :as => :user_followerspage, via: 'get'
   match '/:permalink/following'      => "users#followingpage",  :as => :user_followingpage, via: 'get'
   match '/:permalink/eventlist'      => "users#eventlist",      :as => :user_eventlist, via: 'get'
